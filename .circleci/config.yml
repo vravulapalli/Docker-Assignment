@@ -16,7 +16,7 @@ jobs:
             - run:
                 name: Run tests
                 command: |
-                  python -m pytest /app/test_sparse_recommender.py  # Adjust the path if needed
+                  python -m pytest test_sparse_recommender.py  # Adjust the path if needed
             - run:
                 name: Docker build
                 command: docker build -t $DOCKERHUB_USERNAME/myapp:${CIRCLE_SHA1} .
