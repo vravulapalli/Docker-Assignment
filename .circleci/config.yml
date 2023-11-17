@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            python -m pytest test.py
+            python -m pytest /app/test_sparse_recommender.py  # Adjust the path if needed
 
 workflows:
   version: 2
