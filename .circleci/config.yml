@@ -5,7 +5,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: python:3.9 # Use an appropriate Python version
+      - image: python:3.9
 
     working_directory: /app
 
