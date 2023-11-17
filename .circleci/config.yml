@@ -1,5 +1,4 @@
 version: 2.1
-​
 jobs:
     build_and_push:
         docker:
