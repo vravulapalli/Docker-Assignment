@@ -1,30 +1,38 @@
-# .circleci/config.yml
-
 version: 2.1
-
+​
 jobs:
-  build:
-    docker:
-      - image: python:3.9
+    build_and_push:
+        docker:
+            - image: cimg/python:3.8
+        steps:
+            - checkout
+            - setup_remote_docker:
+                version: 19.03.13
+            - run:
+                name: Install dependencies
+                command: |
+                  python -m pip install --upgrade pip==21.3.1
+                  pip install -r requirements.txt -v
 
-    working_directory: /app
-
-    steps:
-      - checkout
-
-      - run:
-          name: Install dependencies
-          command: |
-            python -m pip install --upgrade pip==21.3.1
-            pip install -r requirements.txt -v
-
-      - run:
-          name: Run tests
-          command: |
-            python -m pytest /app/test_sparse_recommender.py  # Adjust the path if needed
-
+            - run:
+                name: Run tests
+                command: |
+                  python -m pytest /app/test_sparse_recommender.py  # Adjust the path if needed
+            - run:
+                name: Docker build
+                command: docker build -t $DOCKERHUB_USERNAME/myapp:${CIRCLE_SHA1} .
+            - run:
+                name: Authenticate with Docker Hub
+                command: echo "$DOCKERHUB_PASS" | docker login --username $DOCKERHUB_USERNAME --password-stdin
+            - run:
+                name: Push Docker Image to Docker Hub
+                command: docker push $DOCKERHUB_USERNAME/myapp:${CIRCLE_SHA1}
 workflows:
-  version: 2
-  build:
-    jobs:
-      - build
+    version: 2
+    build_and_deploy:
+        jobs:
+            - build_and_push:
+                filters:
+                    branches:
+                        only: main
+
